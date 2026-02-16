@@ -1,0 +1,52 @@
+{% extends "layouts/layout_login.html" %}
+
+{% block contenu %}
+<div class="login-box">
+    <div class="card card-outline card-primary">
+        <div class="card-header">
+            <h1 class="mb-0 link-dark text-center link-offset-2 link-opacity-100 link-opacity-50-hover">Se Connecter</h1>
+        </div>
+        <div class="card-body login-card-body">
+            <p class="login-box-msg">Bibiothèque | Ouvrir session</p>
+
+            {% if error %}
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+                </div>
+            {% endif %}
+
+            <form action="/login" method="post">
+                <div class="input-group mb-1">
+                    <div class="form-floating">
+                        <input name="email" type="email" id="email" class="form-control" value="" placeholder="" />
+                        <label for="email">Email</label>
+                    </div>
+                    <div class="input-group-text"><span class="bi bi-envelope"></span></div>
+                </div>
+                <div class="input-group mb-1">
+                    <div class="form-floating">
+                        <input name="password" id="password" type="password" class="form-control" placeholder="" />
+                        <label for="password">Mot de passe</label>
+                    </div>
+                    <div class="input-group-text"><span class="bi bi-lock-fill"></span></div>
+                </div>
+                <div class="row  mb-3">
+                    <div class="col-8 d-inline-flex align-items-center">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                            <label class="form-check-label" for="flexCheckDefault"> Se souvenir de moi </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row gap-2 mb-3">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary btn-block w-100">Se connecter</button>
+                    </div>
+                </div>
+            </form>
+
+            <p class="mb-1"><a href="forgot-password.html">Mot de passe oublié ?</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,171 @@
+{% extends "layouts/layout.html" %}
+
+{% block contenu %}
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Mon espace</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item active">Tableau de bord</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="app-content">
+    <div class="container-fluid">
+
+        <!-- Compteurs -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card card-outline card-primary">
+                    <div class="card-body text-center">
+                        <div class="display-4 fw-bold text-primary">
+                            {{ nb_active }}
+                        </div>
+                        <p class="text-muted mb-0">Emprunt(s) en cours</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-outline card-success">
+                    <div class="card-body text-center">
+                        <div class="display-4 fw-bold text-success">
+                            {{ nb_history }}
+                        </div>
+                        <p class="text-muted mb-0">Livre(s) retourné(s)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloc 1 : Emprunts en cours -->
+        <div class="card card-outline card-primary mb-4">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="bi bi-book me-2"></i>
+                    Mes emprunts en cours
+                </h3>
+            </div>
+            <div class="card-body">
+                {% if active_borrows %}
+                <table id="active-table"
+                       class="table table-striped table-hover table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Livre</th>
+                            <th>Auteur</th>
+                            <th>Emprunté le</th>
+                            <th>Date limite</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for borrow in active_borrows %}
+                        <tr>
+                            <td class="fw-semibold">{{ borrow.book_title }}</td>
+                            <td>{{ borrow.book_author }}</td>
+                            <td>{{ borrow.borrowed_at }}</td>
+                            <td>{{ borrow.due_date }}</td>
+                            <td>
+                                {% if borrow.days_late %}
+                                <span class="badge text-bg-danger">
+                                    <i class="bi bi-exclamation-circle me-1"></i>
+                                    {{ borrow.days_late }} j. de retard
+                                </span>
+                                {% else %}
+                                <span class="badge text-bg-warning">
+                                    <i class="bi bi-clock me-1"></i>
+                                    {{ borrow.days_remaining }} j. restants
+                                </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="text-center text-muted py-4">
+                    <i class="bi bi-book fs-1"></i>
+                    <p class="mt-2">Aucun emprunt en cours.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Bloc 2 : Historique -->
+        <div class="card card-outline card-success">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="bi bi-clock-history me-2"></i>
+                    Historique de mes emprunts
+                </h3>
+            </div>
+            <div class="card-body">
+                {% if borrow_history %}
+                <table id="history-table"
+                       class="table table-striped table-hover table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Livre</th>
+                            <th>Auteur</th>
+                            <th>Emprunté le</th>
+                            <th>Retourné le</th>
+                            <th>Durée</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for borrow in borrow_history %}
+                        <tr>
+                            <td class="fw-semibold">{{ borrow.book_title }}</td>
+                            <td>{{ borrow.book_author }}</td>
+                            <td>{{ borrow.borrowed_at }}</td>
+                            <td>{{ borrow.returned_at }}</td>
+                            <td>
+                                <span class="badge text-bg-secondary">
+                                    {{ borrow.days_kept }} jour(s)
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="text-center text-muted py-4">
+                    <i class="bi bi-clock-history fs-1"></i>
+                    <p class="mt-2">Aucun historique disponible.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     {% if active_borrows %}
+    //     new DataTable('#active-table', {
+    //         language: { url: '/assets/plugins/datatables/fr-FR.json' },
+    //         pageLength: 5,
+    //         order: [[3, 'asc']],
+    //         columnDefs: [{ orderable: false, targets: -1 }]
+    //     });
+    //     {% endif %}
+
+    //     {% if borrow_history %}
+    //     new DataTable('#history-table', {
+    //         language: { url: '/assets/plugins/datatables/fr-FR.json' },
+    //         pageLength: 10,
+    //         order: [[3, 'desc']]
+    //     });
+    //     {% endif %}
+    // });
+</script>
+{% endblock %}

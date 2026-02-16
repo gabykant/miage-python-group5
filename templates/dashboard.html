@@ -1,0 +1,311 @@
+{% extends "layouts/layout.html" %}
+
+{% block contenu %}
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Tableau de bord</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item active">Accueil</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="app-content">
+    <div class="container-fluid">
+
+        <!-- ── Compteurs ─────────────────────────────────────────────────── -->
+        <div class="row mb-4">
+
+            <div class="col-md-3 col-sm-6">
+                <div class="info-box shadow-sm">
+                    <span class="info-box-icon bg-primary">
+                        <i class="bi bi-book"></i>
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Livres catalogués</span>
+                        <span class="info-box-number">{{ nb_books }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="info-box shadow-sm">
+                    <span class="info-box-icon bg-success">
+                        <i class="bi bi-mortarboard"></i>
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Étudiants inscrits</span>
+                        <span class="info-box-number">{{ nb_students }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="info-box shadow-sm">
+                    <span class="info-box-icon bg-warning">
+                        <i class="bi bi-arrow-left-right"></i>
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Emprunts en cours</span>
+                        <span class="info-box-number">{{ nb_borrows }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="info-box shadow-sm">
+                    <span class="info-box-icon bg-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">En retard</span>
+                        <span class="info-box-number">{{ nb_late }}</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ── Graphique + Retards ────────────────────────────────────────── -->
+        <div class="row mb-4">
+
+            <!-- Graphique emprunts 30 jours -->
+            <div class="col-md-8">
+                <div class="card card-outline card-primary h-100">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-bar-chart me-2"></i>
+                            Emprunts des 30 derniers jours
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="borrowsChart" height="120"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emprunts en retard -->
+            <div class="col-md-4">
+                <div class="card card-outline card-danger h-100">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-exclamation-circle me-2"></i>
+                            Retards urgents
+                        </h3>
+                        <div class="card-tools">
+                            <a href="/borrows" class="btn btn-tool">
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if late_borrows %}
+                        <ul class="list-group list-group-flush">
+                            {% for b in late_borrows %}
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <div class="fw-semibold">{{ b.book_title }}</div>
+                                        <small class="text-muted">
+                                            {{ b.firstname }} {{ b.lastname }}
+                                        </small>
+                                    </div>
+                                    <span class="badge text-bg-danger align-self-center">
+                                        {{ b.days_late }}j
+                                    </span>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <div class="text-center text-muted py-4">
+                            <i class="bi bi-check-circle text-success fs-2"></i>
+                            <p class="mt-2 mb-0">Aucun retard</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ── Derniers livres + Derniers étudiants ───────────────────────── -->
+        <div class="row mb-4">
+
+            <!-- Derniers livres ajoutés -->
+            <div class="col-md-6">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-book me-2"></i>
+                            Derniers livres ajoutés
+                        </h3>
+                        <div class="card-tools">
+                            <a href="/books" class="btn btn-tool">
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Titre</th>
+                                    <th>Auteur</th>
+                                    <th class="text-center">Dispo.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for book in recent_books %}
+                                <tr>
+                                    <td class="fw-semibold">{{ book.title }}</td>
+                                    <td>{{ book.author }}</td>
+                                    <td class="text-center">
+                                        <span class="badge text-bg-primary">
+                                            {{ book.copies }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Derniers étudiants inscrits -->
+            <div class="col-md-6">
+                <div class="card card-outline card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-mortarboard me-2"></i>
+                            Derniers étudiants inscrits
+                        </h3>
+                        <div class="card-tools">
+                            <a href="/students" class="btn btn-tool">
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Filière</th>
+                                    <th>Niveau</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in recent_students %}
+                                <tr>
+                                    <td class="fw-semibold">
+                                        {{ student.lastname }} {{ student.firstname }}
+                                    </td>
+                                    <td>{{ student.field_study }}</td>
+                                    <td>
+                                        <span class="badge text-bg-info">
+                                            {{ student.level }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ── Emprunts du jour ───────────────────────────────────────────── -->
+        <div class="card card-outline card-warning">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="bi bi-calendar-check me-2"></i>
+                    Emprunts du jour
+                </h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool"
+                            data-lte-toggle="card-collapse">
+                        <i class="bi bi-dash-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                {% if today_borrows %}
+                <table class="table table-sm table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Étudiant</th>
+                            <th>Livre</th>
+                            <th>Date limite</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in today_borrows %}
+                        <tr>
+                            <td class="fw-semibold">
+                                {{ b.firstname }} {{ b.lastname }}
+                            </td>
+                            <td>{{ b.book_title }}</td>
+                            <td>{{ b.due_date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="text-center text-muted py-3">
+                    <p class="mb-0">Aucun emprunt enregistré aujourd'hui.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/assets/plugins/chartjs/chart.umd.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const ctx    = document.getElementById('borrowsChart').getContext('2d');
+    const labels = {{ chart_labels }};
+    const data   = {{ chart_data }};
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label:           'Emprunts',
+                data:            data,
+                backgroundColor: 'rgba(37, 99, 235, 0.7)',
+                borderColor:     'rgba(37, 99, 235, 1)',
+                borderWidth:     1,
+                borderRadius:    4,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

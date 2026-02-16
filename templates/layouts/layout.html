@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Gestion Bibiothèque - Tableau de bord</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+
+        <meta name="title" content="Bibiothèque | Tableau de bord" />
+        <meta name="author" content="Groupe 1" />
+        <meta
+            name="description"
+            content="Application web de gestion de la bibiothèque de l'Université de Douala"
+        />
+        <link rel="preload" href="/assets/css/adminlte.css" as="style" />
+
+        <link
+            rel="stylesheet"
+            href="/assets/utils/index.css"
+            integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q="
+            crossorigin="anonymous"
+            media="print"
+            onload="this.media='all'"
+        />
+        <link
+            rel="stylesheet"
+            href="/assets/utils/overlayscrollbars.min.css"
+            crossorigin="anonymous"
+        />
+        <link
+            rel="stylesheet"
+            href="/assets/utils/bootstrap-icons.min.css"
+            crossorigin="anonymous"
+        />
+        <link rel="stylesheet" href="/assets/css/adminlte.css" />
+        <link rel="stylesheet" href="/assets/plugins/datatables/css/dataTables.bootstrap5.min.css">
+    </head>
+    <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
+
+        <div class="app-wrapper">
+
+            <nav class="app-header navbar navbar-expand bg-body">
+                <div class="container-fluid">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+                                <i class="bi bi-list"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item user-menu">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                <img
+                                src="/assets/images/avatar.png"
+                                class="user-image rounded-circle shadow"
+                                alt="User Image"
+                                />
+                                <span class="d-none d-md-inline">{{ user_fullname }}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <form action="/logout" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-flat float-end">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Sidebar -->
+            <aside class="app-sidebar">
+                <!-- begin::Brand -->
+                <div class="sidebar-brand">
+                    <a href="/" class="brand-link">
+                        <i class="bi bi-book brand-image"></i>
+                        <span class="brand-text fw-light">Bibliothèque</span>
+                    </a>
+                </div>
+                <!-- end::Brand -->
+
+                <!-- begin::Sidebar Wrapper -->
+                <div class="sidebar-wrapper">
+                    <nav class="mt-2">
+                        <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu">
+
+                            <!-- Dashboard -->
+                            <li class="nav-item">
+                                <a href="/" class="nav-link {% if page_active == home %}active{% endif %}">
+                                    <i class="nav-icon bi bi-speedometer"></i>
+                                    <p>Tableau de bord</p>
+                                </a>
+                            </li>
+
+                            {% if is_staff %}
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon bi bi-book"></i>
+                                    <p>
+                                        Catalogue
+                                        <i class="nav-arrow bi bi-chevron-right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="/books" class="nav-link">
+                                            <i class="nav-icon bi bi-list-ul"></i>
+                                            <p>Liste des livres</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/books/add" class="nav-link">
+                                            <i class="nav-icon bi bi-plus-circle"></i>
+                                            <p>Ajouter un livre</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon bi bi-mortarboard"></i>
+                                    <p>
+                                        Étudiants
+                                        <i class="nav-arrow bi bi-chevron-right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="/students" class="nav-link">
+                                            <i class="nav-icon bi bi-list-ul"></i>
+                                            <p>Liste des étudiants</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/students/add" class="nav-link">
+                                            <i class="nav-icon bi bi-person-plus"></i>
+                                            <p>Inscrire un étudiant</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon bi bi-arrow-left-right"></i>
+                                    <p>
+                                        Emprunts
+                                        <i class="nav-arrow bi bi-chevron-right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="/borrows" class="nav-link">
+                                            <i class="nav-icon bi bi-list-check"></i>
+                                            <p>En cours</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            {% endif %}
+
+                            {% if is_admin %}
+                            <li class="nav-header">ADMINISTRATION</li>
+                            
+                             <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon bi bi-people"></i>
+                                    <p>
+                                        Utilisateurs
+                                        <i class="nav-arrow bi bi-chevron-right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="/users" class="nav-link">
+                                            <i class="nav-icon bi bi-list-ul"></i>
+                                            <p>Liste</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/users/add" class="nav-link">
+                                            <i class="nav-icon bi bi-person-plus"></i>
+                                            <p>Ajouter</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            {% endif %}
+
+                        </ul>
+                    </nav>
+                </div>
+            </aside>
+
+            <main class="app-main">
+                <!-- <div class="app-content"> -->
+                    <!-- <div class="container-fluid">
+                        <div class="row mb-2">
+                            <div class="col-sm-6">
+                                <h1 class="m-0">{{ title }}</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-end">
+                                    <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+
+                                    <li class="breadcrumb-item active">{{ title }}</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="container-fluid">
+                        {% block contenu %}
+                        {% endblock %}
+                    </div>
+                <!-- </div> -->
+            </main>
+        
+            <footer class="app-footer">
+                <div class="float-end d-none d-sm-inline">Anything you want</div>
+                <strong>
+                    Copyright &copy; 2014-2025&nbsp;
+                    <a href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
+                </strong>
+                All rights reserved.
+            </footer>
+        </div>
+
+        <script
+            src="/assets/plugins/jquery/jquery.min.js"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="/assets/utils/overlayscrollbars.browser.es6.min.js"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="/assets/utils/popper.min.js"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="/assets/utils/bootstrap.min.js"
+            crossorigin="anonymous"
+        ></script>
+        <script src="/assets/js/adminlte.js"></script>
+        <script src="/assets/plugins/datatables/js/dataTables.min.js"></script>
+        <script src="/assets/plugins/datatables/js/dataTables.bootstrap5.min.js"></script>
+        
+        {% block scripts %}{% endblock %}
+    </body>
+</html>

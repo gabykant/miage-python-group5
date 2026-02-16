@@ -1,0 +1,97 @@
+{% extends "layouts/layout.html" %}
+
+{% block contenu %}
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Ajouter un bibliothécaire</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                    <li class="breadcrumb-item"><a href="/users">Utilisateurs</a></li>
+                    <li class="breadcrumb-item active">Ajouter</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="app-content">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+
+                {% if erreurs %}
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="alert"></button>
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    {% for erreur in erreurs %}
+                    <div>{{ erreur }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-person-plus me-2"></i>
+                            Nouveau bibliothécaire
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="/users">
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">
+                                        Nom <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control"
+                                           name="lastname" value="{{ user.lastname }}"
+                                           placeholder="Nom de famille" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">
+                                        Prénom <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control"
+                                           name="firstname" value="{{ user.firstname }}"
+                                           placeholder="Prénom" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">
+                                        Email <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="email" class="form-control"
+                                           name="email" value="{{ user.email }}"
+                                           placeholder="email@universite.cm" required>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info mt-3">
+                                <i class="bi bi-info-circle me-2"></i>
+                                Le mot de passe sera généré automatiquement
+                                et envoyé par email à l'utilisateur.
+                            </div>
+
+                            <div class="d-flex gap-2 mt-3">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-lg me-1"></i> Créer le compte
+                                </button>
+                                <a href="/users" class="btn btn-secondary">
+                                    <i class="bi bi-x-lg me-1"></i> Annuler
+                                </a>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

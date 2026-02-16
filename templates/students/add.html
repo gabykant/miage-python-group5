@@ -1,0 +1,160 @@
+{% extends "layouts/layout.html" %}
+
+{% block contenu %}
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Inscrire un étudiant</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                    <li class="breadcrumb-item"><a href="/students">Étudiants</a></li>
+                    <li class="breadcrumb-item active">Nouveau</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="app-content">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+
+                {% if erreurs %}
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    {% for erreur in erreurs %}
+                    <div>{{ erreur }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if warning %}
+                <div class="alert alert-warning alert-dismissible">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <i class="bi bi-exclamation-triangle me-2"></i>{{ warning }}
+                </div>
+                {% endif %}
+
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-person-plus me-2"></i>Informations étudiant
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="/students">
+
+                            <div class="row g-3">
+
+                                <!-- Nom / Prénom -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">
+                                        Nom <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control"
+                                           name="lastname" value="{{ student.lastname }}"
+                                           placeholder="Nom de famille" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">
+                                        Prénom <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control"
+                                           name="firstname" value="{{ student.firstname }}"
+                                           placeholder="Prénom" required>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">
+                                        Email <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="email" class="form-control"
+                                           name="email" value="{{ student.email }}"
+                                           placeholder="email@universite.cm" required>
+                                </div>
+
+                                <!-- Matricule -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">
+                                        Matricule <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control"
+                                           name="matricule" value="{{ student.matricule }}"
+                                           placeholder="20250001" required>
+                                </div>
+
+                                <!-- Mot de passe -->
+                                <!-- <div class="col-md-6">
+                                    <label class="form-label fw-semibold">
+                                        Mot de passe <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="password" class="form-control"
+                                           name="password" placeholder="••••••••" required>
+                                </div> -->
+
+                                <!-- Téléphone -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Téléphone</label>
+                                    <input type="text" class="form-control"
+                                           name="phone_number" value="{{ student.phone_number }}"
+                                           placeholder="6XXXXXXXX">
+                                </div>
+
+                                <!-- Filière -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Filière</label>
+                                    <input type="text" class="form-control"
+                                           name="field_study" value="{{ student.field_study }}"
+                                           placeholder="Informatique">
+                                </div>
+
+                                <!-- Spécialité -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Spécialité</label>
+                                    <input type="text" class="form-control"
+                                           name="speciality" value="{{ student.speciality }}"
+                                           placeholder="Génie logiciel">
+                                </div>
+
+                                <!-- Niveau -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Niveau</label>
+                                    <select class="form-select" name="level">
+                                        <option value="">— Choisir —</option>
+                                        <option value="L1" {% if student.level == L1 %}selected{% endif %}>Licence 1</option>
+                                        <option value="L2" {% if student.level == L2 %}selected{% endif %}>Licence 2</option>
+                                        <option value="L3" {% if student.level == L3 %}selected{% endif %}>Licence 3</option>
+                                        <option value="M1" {% if student.level == M1 %}selected{% endif %}>Master 1</option>
+                                        <option value="M2" {% if student.level == M2 %}selected{% endif %}>Master 2</option>
+                                        <option value="D"  {% if student.level == D  %}selected{% endif %}>Doctorat</option>
+                                    </select>
+                                </div>
+
+                            </div>
+
+                            <div class="d-flex gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-lg me-1"></i> Inscrire
+                                </button>
+                                <a href="/students" class="btn btn-secondary">
+                                    <i class="bi bi-x-lg me-1"></i> Annuler
+                                </a>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
