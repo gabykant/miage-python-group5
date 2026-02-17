@@ -39,6 +39,9 @@ router.add_route('GET', '/users', users.index)
 router.add_route('GET',  '/users/add', users.new)
 router.add_route('POST', '/users',     users.create)
 
+HOST = '0.0.0.0'
+PORT = int(os.environ.get("PORT", 8000))
+
 class MainHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
@@ -106,8 +109,6 @@ class MainHandler(BaseHTTPRequestHandler):
         print(f"  [{self.command}] {self.path}  >>  {args[1]}")
 
 if __name__ == '__main__':
-    HOST = '0.0.0.0'
-    PORT = 8000
     print(f"\n  Bibliothèque Université de Douala")
     server = HTTPServer((HOST, PORT), MainHandler)
     

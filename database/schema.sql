@@ -11,11 +11,11 @@ USE python_miage;
 
 -- ── Table users ─────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS users (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    firstname   VARCHAR(255)  NOT NULL,
-    lastname    VARCHAR(255)  NOT NULL,
-    email       VARCHAR(255)  NOT NULL UNIQUE,
-    password    VARCHAR(255)  NOT NULL,
+    id          INT(20) AUTO_INCREMENT PRIMARY KEY,
+    firstname   VARCHAR(191)  NOT NULL,
+    lastname    VARCHAR(191)  NOT NULL,
+    email       VARCHAR(191)  NOT NULL UNIQUE,
+    password    VARCHAR(191)  NOT NULL,
     role        ENUM('admin', 'student', 'bookkeeper') NOT NULL DEFAULT 'student',
     matricule            VARCHAR(20),
     field_study          VARCHAR(100) NULL,
@@ -27,9 +27,9 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- ── Table books ─────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS books (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    title       VARCHAR(255)  NOT NULL,
-    author      VARCHAR(255)  NOT NULL,
+    id          INT(20) AUTO_INCREMENT PRIMARY KEY,
+    title       VARCHAR(191)  NOT NULL,
+    author      VARCHAR(191)  NOT NULL,
     isbn        VARCHAR(20)   NOT NULL UNIQUE,
     publised_year        YEAR,
     publisher       VARCHAR(100),
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS borrows (
     id                  INT AUTO_INCREMENT PRIMARY KEY,
     book_id             INT  NOT NULL,
     user_id             INT  NOT NULL,
-    borrowed_at         DATE NOT NULL DEFAULT (CURDATE()),
+    borrowed_at         DATE NOT NULL DEFAULT (CURDATE),
     due_date  DATE NOT NULL,
     returned_at         DATE,
     created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
