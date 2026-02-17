@@ -3,8 +3,12 @@ database.py — Connexion MySQL (singleton)
 Utilise mysql-connector-python.
 Installation : pip install mysql-connector-python
 """
+from dotenv import load_dotenv
 import mysql.connector
 from mysql.connector import Error
+import os
+
+load_dotenv()
 
 class Database:
     """
@@ -14,11 +18,11 @@ class Database:
 
     # ── Config ─────────────────────────────────────────────────────────────────
     CONFIG = {
-        'host':     'localhost',
-        'port':     3306,
-        'database': 'python_miage',
-        'user':     'root',
-        'password': 'root',
+        'host':     os.getenv('DB_HOST'),
+        'port':     int(os.getenv('DB_PORT', 3306)),
+        'database': os.getenv('DB_NAME'),
+        'user':     os.getenv('DB_USER'),
+        'password': os.getenv('DB_PASSWORD'),
         'charset':  'utf8mb4',
         'autocommit': False,
     }
