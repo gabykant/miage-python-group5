@@ -38,6 +38,8 @@ router.add_route('GET', '/forbidden', errors.forbidden)
 router.add_route('GET', '/users', users.index)
 router.add_route('GET',  '/users/add', users.new)
 router.add_route('POST', '/users',     users.create)
+router.add_route('GET',  '/students/:id',                 student.show)
+router.add_route('POST', '/students/:id/reset-password',  student.reset_password)
 
 HOST = '0.0.0.0'
 PORT = int(os.environ.get("PORT", 8000))

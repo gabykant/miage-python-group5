@@ -1,0 +1,159 @@
+<!-- templates/students/show.html -->
+{% extends "layouts/layout.html" %}
+
+{% block contenu %}
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Profil étudiant</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                    <li class="breadcrumb-item"><a href="/students">Étudiants</a></li>
+                    <li class="breadcrumb-item active">{{ student.lastname }}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="app-content">
+    <div class="container-fluid">
+
+        <!-- Alert success/error reset password -->
+        {% if reset == success %}
+        <div class="alert alert-success alert-dismissible">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <i class="bi bi-check-circle me-2"></i>
+            Le mot de passe a été réinitialisé et envoyé par email à l'étudiant.
+        </div>
+        {% endif %}
+        
+        {% if reset == error %}
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Erreur lors de l'envoi du mail. Réessayez plus tard.
+        </div>
+        {% endif %}
+
+        <div class="row">
+
+            <!-- Informations personnelles -->
+            <div class="col-md-4">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-person me-2"></i>
+                            Informations
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <strong>Matricule</strong><br>
+                            <code>{{ student.matricule }}</code>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Nom complet</strong><br>
+                            {{ student.firstname }} {{ student.lastname }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Email</strong><br>
+                            {{ student.email }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Téléphone</strong><br>
+                            {{ student.phone_number }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Filière</strong><br>
+                            {{ student.field_study }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Niveau</strong><br>
+                            <span class="badge text-bg-info">{{ student.level }}</span>
+                        </div>
+
+                        <hr>
+
+                        <!-- Bouton reset password (admin/bookkeeper uniquement) -->
+                        {% if is_staff %}
+                        <form method="POST" 
+                              action="/students/{{ student.id }}/reset-password"
+                              onsubmit="return confirm('Réinitialiser le mot de passe de cet étudiant ? Un nouveau mot de passe sera envoyé par email.')">
+                            <button type="submit" class="btn btn-warning w-100">
+                                <i class="bi bi-key me-2"></i>
+                                Réinitialiser le mot de passe
+                            </button>
+                        </form>
+                        {% endif %}
+
+                        <!-- <a href="/students/{{ student.id }}/edit" 
+                           class="btn btn-primary w-100 mt-2">
+                            <i class="bi bi-pencil me-2"></i>
+                            Modifier le profil
+                        </a> -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emprunts en cours -->
+            <div class="col-md-8">
+                <div class="card card-outline card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-book me-2"></i>
+                            Emprunts en cours
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        {% if active_borrows %}
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Livre</th>
+                                    <th>Emprunté le</th>
+                                    <th>Date limite</th>
+                                    <th>Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for borrow in active_borrows %}
+                                <tr>
+                                    <td class="fw-semibold">{{ borrow.book_title }}</td>
+                                    <td>{{ borrow.borrowed_at }}</td>
+                                    <td>{{ borrow.due_date }}</td>
+                                    <td>
+                                        {% if borrow.days_late %}
+                                        <span class="badge text-bg-danger">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ borrow.days_late }} j. de retard
+                                        </span>
+                                        {% else %}
+                                        <span class="badge text-bg-warning">
+                                            <i class="bi bi-clock me-1"></i>
+                                            {{ borrow.days_remaining }} j. restants
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <div class="text-center text-muted py-4">
+                            <i class="bi bi-book fs-1"></i>
+                            <p class="mt-2">Aucun emprunt en cours.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

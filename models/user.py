@@ -73,3 +73,16 @@ class UserModel(BaseModel):
             ORDER BY created_at DESC
             LIMIT %s
         """, (limit,))
+    
+    # models/user.py
+    def reset_password(self, user_id: int) -> str:
+        """Génère un nouveau mot de passe et le met à jour en DB."""
+        plain_password = self.generate_password()
+        hashed         = bcrypt.hashpw(plain_password.encode('utf-8'), bcrypt.gensalt())
+        
+        db.execute(
+            "UPDATE users SET password = %s WHERE id = %s",
+            (hashed.decode('utf-8'), user_id)
+        )
+        
+        return plain_password

@@ -63,3 +63,49 @@ class StudentController(BaseController):
             return
         self.redirect(req, '/students')
         return
+    
+    # controllers/student_controller.py
+
+    # GET /students/:id → afficher profil avec bouton reset
+    def show(self, req, params, qs):
+        student = self.model.find_by_id(params['id'])
+        
+        if not student:
+            self.render(req, 'errors/404.html', {}, status=404)
+            return
+        
+        # Récupérer les emprunts actifs de l'étudiant
+        from models.borrow import BorrowModel
+        borrow_model    = BorrowModel()
+        active_borrows  = borrow_model.find_active_by_student(params['id'])
+        
+        self.render(req, 'students/show.html', {
+            "page_active":    "students",
+            "student":        student,
+            "active_borrows": active_borrows,
+        })
+
+    # POST /students/:id/reset-password → réinitialiser le mot de passe
+    def reset_password(self, req, params, qs):
+        student = self.model.find_by_id(params['id'])
+        
+        if not student:
+            self.render(req, 'errors/404.html', {}, status=404)
+            return
+        
+        # Générer nouveau mot de passe
+        new_password = self.model.reset_password(params['id'])
+        
+        # Envoyer par mail
+        user = {
+            "email":     student['email'],
+            "firstname": student['firstname'],
+            "lastname":  student['lastname'],
+        }
+        sent = mail_service.send_password(user, new_password)
+        
+        if sent:
+            # Rediriger avec message de succès
+            self.redirect(req, f"/students/{params['id']}?reset=success")
+        else:
+            self.redirect(req, f"/students/{params['id']}?reset=error")
