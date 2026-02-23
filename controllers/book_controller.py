@@ -113,3 +113,24 @@ class BookController(BaseController):
         
         self.model.delete(params['id'])
         self.redirect(req, '/books')
+
+    # GET /books/:id
+    def show(self, req, params, qs):
+        book = self.model.find_by_id(params['id'])
+        
+        if not book:
+            self.render(req, 'errors/404.html', {}, status=404)
+            return
+        
+        # Récupérer les emprunts actifs pour ce livre
+        from models.borrow import BorrowModel
+        borrow_model    = BorrowModel()
+        active_borrows  = borrow_model.find_active_by_book(params['id'])
+        available       = book['copies'] - len(active_borrows)
+        
+        self.render(req, 'books/show.html', {
+            "page_active":    "livres",
+            "book":           book,
+            "active_borrows": active_borrows,
+            "available":      available,
+        })

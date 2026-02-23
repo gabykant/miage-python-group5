@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-6">
-                <h3 class="mb-0">Inscrire un étudiant</h3>
+                <h3 class="mb-0">{% if student.id %}Modifier un étudiant{% else %}Inscrire un étudiant{% endif %}</h3>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
@@ -46,7 +46,7 @@
                         </h3>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="/students">
+                        <form method="POST" action="{% if student.id %}/students/{{ student.id }}{% else %}/students{% endif %}">
 
                             <div class="row g-3">
 
@@ -139,7 +139,7 @@
 
                             <div class="d-flex gap-2 mt-4">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-check-lg me-1"></i> Inscrire
+                                    <i class="bi bi-check-lg me-1"></i> {% if student.id %}Mettre à jour{% else %}Inscrire{% endif %}
                                 </button>
                                 <a href="/students" class="btn btn-secondary">
                                     <i class="bi bi-x-lg me-1"></i> Annuler

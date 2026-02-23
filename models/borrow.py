@@ -188,3 +188,16 @@ class BorrowModel(BaseModel):
             GROUP BY DATE(created_at)
             ORDER BY day ASC
         """)
+    
+    def find_active_by_book(self, book_id):
+        """Emprunts en cours pour un livre donné."""
+        return db.fetch_all("""
+            SELECT b.*,
+                u.firstname, u.lastname, u.matricule,
+                DATEDIFF(b.due_date, CURDATE()) AS days_remaining,
+                DATEDIFF(CURDATE(), b.due_date) AS days_late
+            FROM borrows b
+            JOIN users u ON u.id = b.user_id
+            WHERE b.book_id = %s AND b.returned_at IS NULL
+            ORDER BY b.due_date ASC
+        """, (book_id,))

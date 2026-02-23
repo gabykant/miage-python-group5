@@ -1,0 +1,153 @@
+{% extends "layouts/layout.html" %}
+
+{% block contenu %}
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">{{ book.title }}</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                    <li class="breadcrumb-item"><a href="/books">Livres</a></li>
+                    <li class="breadcrumb-item active">{{ book.title }}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="app-content">
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- Informations du livre -->
+            <div class="col-md-4">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-book me-2"></i>
+                            Détails
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <strong>Titre</strong><br>
+                            {{ book.title }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Auteur</strong><br>
+                            {{ book.author }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>ISBN</strong><br>
+                            <code>{{ book.isbn }}</code>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Année</strong><br>
+                            {{ book.year }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Genre</strong><br>
+                            <span class="badge text-bg-secondary">{{ book.genre }}</span>
+                        </div>
+
+                        <hr>
+
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="display-6 text-primary">{{ book.copies }}</div>
+                                <small class="text-muted">Exemplaires</small>
+                            </div>
+                            <div class="col-6">
+                                <div class="display-6 {% if available %}text-success{% else %}text-danger{% endif %}">
+                                    {{ available }}
+                                </div>
+                                <small class="text-muted">Disponibles</small>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        {% if is_staff %}
+                        <div class="d-grid gap-2">
+                            <a href="/books/{{ book.id }}/edit" class="btn btn-primary">
+                                <i class="bi bi-pencil me-2"></i>Modifier
+                            </a>
+                            <form method="POST" action="/books/{{ book.id }}/delete"
+                                  onsubmit="return confirm('Supprimer ce livre ?')">
+                                <button type="submit" class="btn btn-danger w-100">
+                                    <i class="bi bi-trash me-2"></i>Supprimer
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emprunts en cours -->
+            <div class="col-md-8">
+                <div class="card card-outline card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-arrow-left-right me-2"></i>
+                            Emprunts en cours
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        {% if active_borrows %}
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Étudiant</th>
+                                    <th>Matricule</th>
+                                    <th>Emprunté le</th>
+                                    <th>Retour prévu</th>
+                                    <th>Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for borrow in active_borrows %}
+                                <tr>
+                                    <td>
+                                        <a href="/students/{{ borrow.user_id }}" 
+                                           class="fw-semibold text-decoration-none">
+                                            {{ borrow.firstname }} {{ borrow.lastname }}
+                                        </a>
+                                    </td>
+                                    <td><code>{{ borrow.matricule }}</code></td>
+                                    <td>{{ borrow.borrowed_at }}</td>
+                                    <td>{{ borrow.due_date }}</td>
+                                    <td>
+                                        {% if borrow.days_late %}
+                                        <span class="badge text-bg-danger">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ borrow.days_late }} j. de retard
+                                        </span>
+                                        {% else %}
+                                        <span class="badge text-bg-warning">
+                                            <i class="bi bi-clock me-1"></i>
+                                            {{ borrow.days_remaining }} j. restants
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <div class="text-center text-muted py-4">
+                            <i class="bi bi-check-circle text-success fs-1"></i>
+                            <p class="mt-2">Tous les exemplaires sont disponibles.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
