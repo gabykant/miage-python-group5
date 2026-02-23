@@ -1,0 +1,120 @@
+{% extends "layouts/layout.html" %}
+
+{% block contenu %}
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">{{ titre }}</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                    <li class="breadcrumb-item"><a href="/books">Livres</a></li>
+                    <li class="breadcrumb-item active">
+                        {% if book.id %}Modifier{% else %}Nouveau{% endif %}
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="app-content">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+
+                {% if erreurs %}
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    {% for erreur in erreurs %}
+                    <div>{{ erreur }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-book me-2"></i>
+                            Informations du livre
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ action }}">
+
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <label class="form-label fw-semibold">
+                                        Titre <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control"
+                                           name="title" value="{{ book.title }}"
+                                           placeholder="Introduction à Python" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Année</label>
+                                    <input type="number" class="form-control"
+                                           name="year" value="{{ book.year }}"
+                                           min="1900" max="2100">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">
+                                        Auteur <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control"
+                                           name="author" value="{{ book.author }}"
+                                           placeholder="John Doe" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">
+                                        ISBN <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control"
+                                           name="isbn" value="{{ book.isbn }}"
+                                           placeholder="978-X-XXXX-XXXX-X" required>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <label class="form-label fw-semibold">Genre</label>
+                                    <select class="form-select" name="genre">
+                                        <option value="">— Choisir —</option>
+                                        <option value="Informatique" {% if book.genre == Informatique %}selected{% endif %}>Informatique</option>
+                                        <option value="Mathématiques" {% if book.genre == Mathématiques %}selected{% endif %}>Mathématiques</option>
+                                        <option value="Physique" {% if book.genre == Physique %}selected{% endif %}>Physique</option>
+                                        <option value="Droit" {% if book.genre == Droit %}selected{% endif %}>Droit</option>
+                                        <option value="Économie" {% if book.genre == Économie %}selected{% endif %}>Économie</option>
+                                        <option value="Littérature" {% if book.genre == Littérature %}selected{% endif %}>Littérature</option>
+                                        <option value="Histoire" {% if book.genre == Histoire %}selected{% endif %}>Histoire</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Exemplaires</label>
+                                    <input type="number" class="form-control"
+                                           name="copies" value="{{ book.copies }}"
+                                           min="1" placeholder="1">
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-lg me-1"></i>
+                                    {% if book.id %}Mettre à jour{% else %}Ajouter{% endif %}
+                                </button>
+                                <a href="/books" class="btn btn-secondary">
+                                    <i class="bi bi-x-lg me-1"></i> Annuler
+                                </a>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

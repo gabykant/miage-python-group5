@@ -28,7 +28,7 @@
                     {{ total }} livre(s) trouvé(s)
                 </h3>
                 <div class="card-tools">
-                    <a href="/books/nouveau" class="btn btn-primary btn-sm">
+                    <a href="/books/add" class="btn btn-primary btn-sm">
                         <i class="bi bi-plus-lg me-1"></i> Ajouter
                     </a>
                 </div>
@@ -76,7 +76,7 @@
                                        class="btn btn-warning" title="Modifier">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form method="POST" action="/books/{{ book.id }}/suppr"
+                                    <form method="POST" action="/books/{{ book.id }}/delete"
                                           onsubmit="return confirm('Supprimer ce livre ?')"
                                           style="display:inline;">
                                         <button type="submit" class="btn btn-danger" title="Supprimer">
