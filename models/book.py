@@ -5,10 +5,10 @@ db = Database()
 
 class BookModel(BaseModel):
     table           = 'books'
-    fields          = ['title', 'author', 'isbn', 'year', 'genre', 'copies']
+    fields          = ['title', 'author', 'isbn', 'publised_year', 'genre', 'publisher', 'copies', 'available', 'created_at']
     required_fields = ['title', 'author', 'isbn']
 
-    def find_all(self, order_by='title'):
+    def find_all(self, order_by='created_at DESC'):
         return super().find_all(order_by=order_by)
 
     def search(self, term):

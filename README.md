@@ -11,7 +11,7 @@
 _Saisir activate et valider_
 `activate`
 
-`pip install requirements.txt`
+`pip install -r requirements.txt`
 
 ## Lancer le serveur
 

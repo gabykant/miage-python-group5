@@ -47,16 +47,44 @@ class BaseModel:
 
     # ── Écriture ───────────────────────────────────────────────────────────────
 
+    # def create(self, data: dict):
+    #     """
+    #     Insère un nouvel enregistrement.
+    #     Retourne l'ID inséré.
+    #     """
+    #     filtered = {k: v for k, v in data.items() if k in self.fields}
+    #     columns  = ', '.join(filtered.keys())
+    #     placeholders = ', '.join(['%s'] * len(filtered))
+    #     sql = f"INSERT INTO {self.table} ({columns}) VALUES ({placeholders})"
+    #     return db.execute(sql, tuple(filtered.values()))
     def create(self, data: dict):
         """
         Insère un nouvel enregistrement.
-        Retourne l'ID inséré.
+        Retourne l'ID inséré ou lève une exception.
         """
+        from mysql.connector import Error
+        
         filtered = {k: v for k, v in data.items() if k in self.fields}
         columns  = ', '.join(filtered.keys())
         placeholders = ', '.join(['%s'] * len(filtered))
         sql = f"INSERT INTO {self.table} ({columns}) VALUES ({placeholders})"
-        return db.execute(sql, tuple(filtered.values()))
+        
+        try:
+            return db.execute(sql, tuple(filtered.values()))
+        except Error as e:
+            # Code 1062 = Duplicate entry for unique key
+            if e.errno == 1062:
+                # Extraire le nom de la colonne depuis le message d'erreur
+                # Message type: "Duplicate entry 'XXX' for key 'books.isbn'"
+                if 'isbn' in str(e).lower():
+                    raise ValueError("Cet ISBN existe déjà dans la base de données.")
+                elif 'email' in str(e).lower():
+                    raise ValueError("Cet email est déjà utilisé.")
+                else:
+                    raise ValueError("Cette valeur existe déjà (contrainte d'unicité).")
+            else:
+                # Autre erreur MySQL
+                raise
 
     def update(self, record_id, data: dict):
         """Met à jour un enregistrement existant."""

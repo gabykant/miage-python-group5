@@ -20,6 +20,13 @@
 <div class="app-content">
     <div class="container-fluid">
 
+        {% if success %}
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle me-2"></i>{{ success }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endif %}
+
         <!-- Tableau -->
         <div class="card card-outline card-primary">
             <div class="card-header">

@@ -58,7 +58,7 @@ class StudentController(BaseController):
                 "page_active": "students",
                 "student":     {},
                 "erreurs":     [],
-                "warning":     f"Compte créé mais l'envoi du mail à {user['email']} a échoué.",
+                "warning":     f"Compte créé avec le mot de passe { plain_password } mais l'envoi du mail à {user['email']} a échoué.",
             })
             return
         self.redirect(req, '/students')

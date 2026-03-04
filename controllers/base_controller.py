@@ -41,6 +41,7 @@ class BaseController:
         req.end_headers()
         req.wfile.write(body)
 
+    
     def redirect(self, req, location):
         """Redirection HTTP 302."""
         req.send_response(302)

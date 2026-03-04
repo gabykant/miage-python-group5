@@ -38,15 +38,87 @@ class BookController(BaseController):
                 "page_active": "books",
             })
 
-    def add_submit(self, req, params, query_string):
-        body = self.get_body(req)
-        title = body.get('title', [''])[0]
-        author = body.get('author', [''])[0]
+    # def add_submit(self, req, params, query_string):
+    #     body = self.get_body(req)
+    #     title = body.get('title', [''])[0]
+    #     author = body.get('author', [''])[0]
 
-        # Ici, vous ajouteriez le livre à votre base de données
-        print(f"Adding book: {title} by {author}")
+    #     # Ici, vous ajouteriez le livre à votre base de données
+    #     print(f"Adding book: {title} by {author}")
 
-        self.redirect(req, '/books')
+    #     self.redirect(req, '/books')
+
+    # def add_submit(self, req, params, qs):
+    #     data    = self.get_body(req)
+    #     data    = {k: html.escape(v.strip()) for k, v in data.items()}
+        
+    #     erreurs = self.model.validate(data)
+        
+    #     if erreurs:
+    #         self.render(req, 'books/add.html', {
+    #             "page_active": "livres",
+    #             "book":        data,
+    #             "action":      "/books",
+    #             "titre":       "Ajouter un livre",
+    #             "erreurs":     erreurs,
+    #         })
+    #         return
+
+    #     self.model.create(data)
+        
+    #     # Charger la liste directement avec le message
+    #     books      = self.model.find_all()
+    #     all_books  = books
+    #     # genres     = sorted(set(b['genre'] for b in all_books if b.get('genre')))
+        
+    #     self.render(req, 'books/index.html', {
+    #         "page_active": "livres",
+    #         "books":       books,
+    #         # "genres":      genres,
+    #         "terme":       '',
+    #         "genre":       '',
+    #         "total":       len(books),
+    #         "success":     "Livre ajouté avec succès !",
+    #     })
+    def add_submit(self, req, params, qs):
+        data    = self.get_body(req)
+        data    = {k: html.escape(v.strip()) for k, v in data.items()}
+        
+        erreurs = self.model.validate(data)
+        
+        if erreurs:
+            self.render(req, 'books/add.html', {
+                "page_active": "livres",
+                "book":        data,
+                "action":      "/books",
+                "titre":       "Ajouter un livre",
+                "erreurs":     erreurs,
+            })
+            return
+
+        try:
+            self.model.create(data)
+            self.redirect(req, '/books?success=created')
+            
+        except ValueError as e:
+            # Exception levée par le model (ISBN dupliqué)
+            self.render(req, 'books/add.html', {
+                "page_active": "livres",
+                "book":        data,
+                "action":      "/books",
+                "titre":       "Ajouter un livre",
+                "erreurs":     [str(e)],  # ← message d'erreur affiché
+            })
+        except Exception as e:
+            # Autre erreur inattendue
+            print(f"  [ERREUR] {type(e).__name__}: {e}")
+            self.render(req, 'books/add.html', {
+                "page_active": "livres",
+                "book":        data,
+                "action":      "/books",
+                "titre":       "Ajouter un livre",
+                "erreurs":     ["Une erreur inattendue s'est produite."],
+            })
 
     # GET /books/:id/edit
     def edit(self, req, params, qs):
