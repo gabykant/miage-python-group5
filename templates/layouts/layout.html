@@ -93,7 +93,7 @@
                                 </a>
                             </li>
 
-                            {% if is_staff %}
+                            
                             <li class="nav-item">
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon bi bi-book"></i>
@@ -109,15 +109,18 @@
                                             <p>Liste des livres</p>
                                         </a>
                                     </li>
+                                    {% if is_staff %}
                                     <li class="nav-item">
                                         <a href="/books/add" class="nav-link">
                                             <i class="nav-icon bi bi-plus-circle"></i>
                                             <p>Ajouter un livre</p>
                                         </a>
                                     </li>
+                                    {% endif %}
                                 </ul>
                             </li>
 
+                            {% if is_staff %}
                             <li class="nav-item">
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon bi bi-mortarboard"></i>
